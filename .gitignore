@@ -1,0 +1,25 @@
+# Exclude Notepad++ backup files
+*.bak
+*.npp
+
+# Exclude Raylib build files
+bin/
+obj/
+build/
+*.exe
+*.o
+*.a
+*.so
+*.dll
+
+# Exclude IDE-specific files
+.vscode/
+.idea/
+*.suo
+*.user
+*.sln
+*.vcxproj*
+
+# Exclude other temporary files
+*.log
+*.tmp
