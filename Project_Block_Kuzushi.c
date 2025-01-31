@@ -50,7 +50,7 @@ int main()
 
     
     Brick bricks[BRICK_ROWS][BRICK_COLUMNS];
-    ResetBricks(bricks, SCREEN_WIDTH); // Pass SCREEN_WIDTH as a parameter
+    ResetBricks(bricks, SCREEN_WIDTH);
 
     
     bool gameWon = false;
