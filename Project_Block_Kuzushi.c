@@ -37,11 +37,11 @@ typedef struct Paddle {
 typedef struct Brick {
     Rectangle rect;
     bool active;
+    bool isBlue;
 } Brick;
 
 void ResetBall(Ball *ball, Paddle *paddle);
 void ResetBricks(Brick bricks[BRICK_ROWS][BRICK_COLUMNS], int screenWidth, int level);
-
 
 int main()
 {
@@ -57,14 +57,14 @@ int main()
     ResetBall(&ball, &paddle);
 
     Brick bricks[BRICK_ROWS][BRICK_COLUMNS];
-    int level = 1; // Početni nivo
+    int level = 1;
     ResetBricks(bricks, SCREEN_WIDTH, level);
 
     game_state_e gameState = GAME_MAIN_MENU;
     bool nextLevel = false;
 
     int points = 0;
-    int pointsToNextLevel = 100;
+    int pointsToNextLevel = 300;
 
     while (!WindowShouldClose()) {
         switch (gameState) {
@@ -104,6 +104,11 @@ int main()
                                 bricks[i][j].active = false;
                                 ball.speed.y *= -1;
                                 points += 10;
+                                
+                                if (bricks[i][j].isBlue) {
+                                    paddle.lives++;
+                                    DrawText("Extra Life!", SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2, 30, BLUE);
+                                }
 
                                 if (points >= pointsToNextLevel) {
                                     nextLevel = true;
@@ -162,7 +167,7 @@ int main()
 
         if (nextLevel) {
             level++;
-            pointsToNextLevel += 00; 
+            pointsToNextLevel += 100; 
             ResetBall(&ball, &paddle);
             ResetBricks(bricks, SCREEN_WIDTH, level);
             nextLevel = false; 
@@ -186,7 +191,11 @@ int main()
                 for (int i = 0; i < BRICK_ROWS; i++) {
                     for (int j = 0; j < BRICK_COLUMNS; j++) {
                         if (bricks[i][j].active) {
-                            DrawRectangleRec(bricks[i][j].rect, RED);
+                            if (bricks[i][j].isBlue) {
+                                DrawRectangleRec(bricks[i][j].rect, BLUE);
+                            } else {
+                                DrawRectangleRec(bricks[i][j].rect, RED);
+                            }
                         }
                     }
                 }
@@ -202,8 +211,7 @@ int main()
                 break;
 
             case GAME_WIN:
-                DrawText("YOU WIN!", SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 - 50, 100, GREEN);
-                DrawText("Press N for Next Level or Q to Quit", SCREEN_WIDTH / 2 - 300, SCREEN_HEIGHT / 2 + 50, 40, WHITE);
+                DrawText("YOU WIN!", SCREEN_WIDTH / 2 - 300, SCREEN_HEIGHT / 2 - 50, 100, GREEN);               
                 break;
         }
 
@@ -234,6 +242,11 @@ void ResetBricks(Brick bricks[BRICK_ROWS][BRICK_COLUMNS], int screenWidth, int l
                 BRICK_HEIGHT
             };            
             bricks[i][j].active = (level % 2 == 0) ? (j % 2 == 0) : (i % 2 == 0);
+            bricks[i][j].isBlue = false;
+            
+            if (rand() % 10 == 0) { 
+                bricks[i][j].isBlue = true;
+            }
         }
     }
 }
